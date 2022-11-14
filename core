@@ -1,0 +1,46 @@
+#!/bin/bash
+
+install() {
+  # get system os/arch
+  local arch="$PACKAGE_OS_ARCH"
+  local kernel="$PACKAGE_OS_KERNEL"
+  local platform="$PACKAGE_OS_PLATFORM"
+  # usr_bin_dir
+  local usr_bin_dir="$PACKAGE_USER_BIN_DIR"
+  local tmp_dir="$PACKAGE_TMP_DIR"
+
+  # prepare vars
+  local name="uncover"
+  # files
+  local tmp_file="$name.zip"
+  local bin_file="./$name"
+
+  if [ "$platform" = "darwin" ]; then
+    platform="macOS"
+  fi
+
+  # prepare context
+  cd $tmp_dir
+
+  # reference: https://github.com/projectdiscovery/uncover/releases
+  # example:
+  #   https://github.com/projectdiscovery/uncover/releases/download/v0.0.9/uncover_0.0.9_macOS_amd64.zip
+  #   https://github.com/projectdiscovery/uncover/releases/download/v0.0.9/uncover_0.0.9_macOS_arm64.zip
+  # generate url
+  local url="https://github.com/projectdiscovery/uncover/releases/download/$PACKAGE_CORE_VERSION/${name}_${PACKAGE_CORE_VERSION#v}_${platform}_${arch}.zip"
+  log::debug "[package][$name][$kernel][$arch] url: $url"
+
+  # download
+  os::download $tmp_file $url
+
+  # extract
+  tar -zxvf $tmp_file >>/dev/null 2>&1
+
+  # install
+  sudo mv $bin_file $usr_bin_dir
+
+  # clean
+  rm -rf $tmp_dir
+}
+
+export -f install
