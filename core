@@ -1,7 +1,7 @@
 #!/bin/bash
 
 install() {
-  log::info "[package][$name] preparing ..."
+  log::info "[$(timestamp)][package][$name] preparing ..."
 
   # get system os/arch
   local arch="$PACKAGE_OS_ARCH"
@@ -30,22 +30,23 @@ install() {
   #   https://github.com/projectdiscovery/uncover/releases/download/v0.0.9/uncover_0.0.9_macOS_arm64.zip
   # generate url
   local url="https://github.com/projectdiscovery/uncover/releases/download/$PACKAGE_CORE_VERSION/${name}_${PACKAGE_CORE_VERSION#v}_${platform}_${arch}.zip"
-  log::debug "[package][$name][$kernel][$arch] url: $url"
+  log::debug "[$(timestamp)][package][$name][$kernel][$arch] url: $url, file: ${tmp_file}, tmp_dir: $tmp_dir"
 
   # download
-  log::info "[package][$name] downloading ..."
+  log::info "[$(timestamp)][package][$name] downloading ..."
   os::download $tmp_file $url
 
   # extract
-  log::info "[package][$name] extracting ..."
-  tar -zxvf $tmp_file >>/dev/null 2>&1
+  log::info "[$(timestamp)][package][$name] extracting ..."
+  # tar -zxvf $tmp_file >>/dev/null 2>&1
+  os::unzip -xo $tmp_file >>/dev/null 2>&1
 
   # install
-  log::info "[package][$name] installing ..."
+  log::info "[$(timestamp)][package][$name] installing ..."
   sudo mv $bin_file $usr_bin_dir
 
   # clean
-  log::info "[package][$name] cleaning ..."
+  log::info "[$(timestamp)][package][$name] cleaning ..."
   rm -rf $tmp_dir
 }
 
