@@ -1,6 +1,8 @@
 #!/bin/bash
 
 install() {
+  log::info "[package][$name] preparing ..."
+
   # get system os/arch
   local arch="$PACKAGE_OS_ARCH"
   local kernel="$PACKAGE_OS_KERNEL"
@@ -31,15 +33,19 @@ install() {
   log::debug "[package][$name][$kernel][$arch] url: $url"
 
   # download
+  log::info "[package][$name] downloading ..."
   os::download $tmp_file $url
 
   # extract
+  log::info "[package][$name] extracting ..."
   tar -zxvf $tmp_file >>/dev/null 2>&1
 
   # install
+  log::info "[package][$name] installing ..."
   sudo mv $bin_file $usr_bin_dir
 
   # clean
+  log::info "[package][$name] cleaning ..."
   rm -rf $tmp_dir
 }
 
