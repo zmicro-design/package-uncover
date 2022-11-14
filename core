@@ -39,7 +39,7 @@ install() {
   # extract
   log::info "[$(timestamp)][package][$name] extracting ..."
   # tar -zxvf $tmp_file >>/dev/null 2>&1
-  os::unzip -xo $tmp_file >>/dev/null 2>&1
+  os::extract $tmp_file
 
   # install
   log::info "[$(timestamp)][package][$name] installing ..."
